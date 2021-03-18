@@ -1,0 +1,16 @@
+# vs code
+/.vscode
+
+# Mac files
+.DS_Store
+
+# Dependency directories
+/node_modules
+*/node_modules
+
+# lerna files
+/lerna-debug.log
+
+# Lock files
+/package-lock.json
+/yarn.lock
