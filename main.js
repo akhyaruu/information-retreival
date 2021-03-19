@@ -1,5 +1,5 @@
 /* 
-   Initial stage of text processing (sudah dibuatkan function masing2)
+   Initial stage of text processing (pakai bhs. inggris)
 
    1. Tokenization
    2. Normalization
@@ -25,7 +25,6 @@
    4. Stop words
       # We may omit very common words (or not) #
       ex: the, a, to, of, etc 
-      soon dikerjakan
 */
 
 const fs = require('fs');
@@ -39,8 +38,10 @@ const data2 = file2.split('\r\n');
 const data = data1.concat(data2);
 
 data.map(line => {
-   console.log(tokenize(line));
-   // tokenize(line);
+   // const data = stopwords(tokenize(line));
+   // const result = data.split(' ');
+   // console.log(stopwords(tokenize(line)));
+   console.log(prettier(stopwords(tokenize(line))));
 });
 
 
@@ -59,8 +60,31 @@ function tokenize(line) {
    }
 }
 
-function normalize() {
+function stopwords(line) {
+   const sourceStopWords = fs.readFileSync('src/stopwords.txt', 'utf-8').toString();
+   const stopWords = sourceStopWords.split('\r\n');
+   const lineModified = line.split(' ');
+   let lineReplace = line;
+   lineModified.map(word => {
+      stopWords.map(stopword => {
+         if (word == stopword) {
+            lineReplace = lineReplace.replace(word, "");
+         }
+      })
+   });
+   const result = lineReplace.trim();
+   return result;
+}
 
+function prettier(line) {
+   const lineArr = line.split(' ');
+   let newLine = '';
+   lineArr.map(word => {
+      if (word) {
+         newLine += `${word} `;
+      }
+   });
+   return newLine;
 }
 
 
