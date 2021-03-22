@@ -38,20 +38,24 @@ const data2 = file2.split('\r\n');
 const data = data1.concat(data2);
 
 
-textProcessing(data1);
-// console.log(tokenArr);
-
-// data1.map(line => {
-//    // const result = prettier(stopwords(tokenize(line)));
-//    // tokenArr.push(prettier(stopwords(tokenize(line)))); 
-//    // tokenize(line);
-// });
+textProcessing(data);
 
 
-function textProcessing(data) {
+function textProcessing(data1) {
+   // data.map(line => {
+   //    // tokenize(line);
+   //    console.log(tokenize(line));
+   // });
+
+
+
+
+   let textResult = [];
    data.map(line => {
-      tokenize(line);
+      const words = tokenize(line);
+      words.map(word => textResult.push(word));
    });
+   console.log(textResult);
 }
 
 
@@ -65,32 +69,18 @@ function tokenize(line) {
          lineReplace = lineReplace.replace(char, '');
       });       
    }
-   const words = lineReplace.split(' ');
-   const arrWords = words.filter(word => word.length != 0);
 
-   const result = stopwords(arrWords);
-   console.log(result);
+   const arrWords = lineReplace.split(' ');
+
+   // console.log(prettier(stopwords(arrWords)));
+   const result = prettier(stopwords(arrWords));
+   // console.log(result);
+   return result;
 }
 
 function stopwords(arrWords) {
    const sourceStopWords = fs.readFileSync('src/stopwords.txt', 'utf-8').toString();
    const stopWords = sourceStopWords.split('\r\n');
-   // const lineModified = line.split(' ');
-   // let lineReplace = arrWords;
-   // arrWords.map(word => {
-   //    stopWords.map(stopword => {
-   //       if (word == stopword) {
-   //          lineReplace = lineReplace.replace(word, '');
-   //       }
-   //    })
-   // });
-   // const result = lineReplace.trim();
-   // return result;
-
-   
-
-
-
    stopWords.map(stopword => {
       arrWords.map(word => {
          if (word == stopword) {
@@ -105,15 +95,28 @@ function stopwords(arrWords) {
    return arrWords;
 }
 
-function prettier(line) {
-   const lineArr = line.split(' ');
-   let newLine = '';
-   lineArr.map(word => {
-      if (word) {
-         newLine += `${word} `;
-      }
-   });
-   return newLine;
+function prettier(arrWords) {
+   // const lineArr = line.split(' ');
+   // let newLine = '';
+   // lineArr.map(word => {
+   //    if (word) {
+   //       newLine += `${word} `;
+   //    }
+   // });
+   // return newLine;
+
+
+
+   // const obj = {array: []};
+   // const words = arrWords.filter(word => word.length != 0);
+   // obj.array.push(words);
+   
+   if (arrWords.length) {
+      const words = arrWords.filter(word => word.length != 0);
+      return words;
+   } 
+   
+   // console.log(words);
 }
 
 
