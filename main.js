@@ -37,12 +37,22 @@ const data1 = file1.split('\r\n');
 const data2 = file2.split('\r\n');
 const data = data1.concat(data2);
 
-data.map(line => {
-   // const data = stopwords(tokenize(line));
-   // const result = data.split(' ');
-   // console.log(stopwords(tokenize(line)));
-   console.log(prettier(stopwords(tokenize(line))));
-});
+
+textProcessing(data1);
+// console.log(tokenArr);
+
+// data1.map(line => {
+//    // const result = prettier(stopwords(tokenize(line)));
+//    // tokenArr.push(prettier(stopwords(tokenize(line)))); 
+//    // tokenize(line);
+// });
+
+
+function textProcessing(data) {
+   data.map(line => {
+      tokenize(line);
+   });
+}
 
 
 function tokenize(line) {
@@ -52,28 +62,47 @@ function tokenize(line) {
    let lineReplace = lineLower;
    if (charMatch) {
       charMatch.map(char => {
-         lineReplace = lineReplace.replace(char, "");
+         lineReplace = lineReplace.replace(char, '');
       });       
-      return lineReplace;
-   } else {
-      return lineLower;
    }
+   const words = lineReplace.split(' ');
+   const arrWords = words.filter(word => word.length != 0);
+
+   const result = stopwords(arrWords);
+   console.log(result);
 }
 
-function stopwords(line) {
+function stopwords(arrWords) {
    const sourceStopWords = fs.readFileSync('src/stopwords.txt', 'utf-8').toString();
    const stopWords = sourceStopWords.split('\r\n');
-   const lineModified = line.split(' ');
-   let lineReplace = line;
-   lineModified.map(word => {
-      stopWords.map(stopword => {
+   // const lineModified = line.split(' ');
+   // let lineReplace = arrWords;
+   // arrWords.map(word => {
+   //    stopWords.map(stopword => {
+   //       if (word == stopword) {
+   //          lineReplace = lineReplace.replace(word, '');
+   //       }
+   //    })
+   // });
+   // const result = lineReplace.trim();
+   // return result;
+
+   
+
+
+
+   stopWords.map(stopword => {
+      arrWords.map(word => {
          if (word == stopword) {
-            lineReplace = lineReplace.replace(word, "");
-         }
+            const index = arrWords.indexOf(word);
+            if (index > -1) {
+               arrWords.splice(index, 1);
+            }
+         }  
       })
    });
-   const result = lineReplace.trim();
-   return result;
+
+   return arrWords;
 }
 
 function prettier(line) {
