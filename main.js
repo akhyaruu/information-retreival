@@ -41,19 +41,15 @@ const data = data1.concat(data2);
 textProcessing(data);
 
 
-function textProcessing(data1) {
+function textProcessing(data) {
    // data.map(line => {
-   //    // tokenize(line);
-   //    console.log(tokenize(line));
+   //    tokenize(line);
    // });
 
-
-
-
-   let textResult = [];
+   const textResult = [];
    data.map(line => {
-      const words = tokenize(line);
-      words.map(word => textResult.push(word));
+      const arrWords = tokenize(line);
+      arrWords.map(word => textResult.push(word));
    });
    console.log(textResult);
 }
@@ -69,14 +65,10 @@ function tokenize(line) {
          lineReplace = lineReplace.replace(char, '');
       });       
    }
-
    const arrWords = lineReplace.split(' ');
-
-   // console.log(prettier(stopwords(arrWords)));
-   const result = prettier(stopwords(arrWords));
-   // console.log(result);
-   return result;
+   return prettier(stopwords(arrWords));
 }
+
 
 function stopwords(arrWords) {
    const sourceStopWords = fs.readFileSync('src/stopwords.txt', 'utf-8').toString();
@@ -91,32 +83,15 @@ function stopwords(arrWords) {
          }  
       })
    });
-
    return arrWords;
 }
 
+
 function prettier(arrWords) {
-   // const lineArr = line.split(' ');
-   // let newLine = '';
-   // lineArr.map(word => {
-   //    if (word) {
-   //       newLine += `${word} `;
-   //    }
-   // });
-   // return newLine;
-
-
-
-   // const obj = {array: []};
-   // const words = arrWords.filter(word => word.length != 0);
-   // obj.array.push(words);
-   
-   if (arrWords.length) {
-      const words = arrWords.filter(word => word.length != 0);
-      return words;
-   } 
-   
-   // console.log(words);
+   // if (arrWords.length) {
+   //    const words = arrWords.filter(word => word.length != 0);
+   //    return words;
+   // } 
+      
+   return arrWords.filter(word => word.length != 0).filter(arr => arr);   
 }
-
-
