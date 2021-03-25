@@ -1,5 +1,6 @@
 /* 
-   Tahapan text processing dengan inverted index (https://nlp.stanford.edu/IR-book/html/htmledition/a-first-take-at-building-an-inverted-index-1.html)
+   Tahapan text processing di information retreival 
+   dengan inverted index (https://nlp.stanford.edu/IR-book/html/htmledition/a-first-take-at-building-an-inverted-index-1.html)
 
    1. Collect documents
    2. Tokenization
@@ -33,36 +34,29 @@ const fs = require('fs');
 const file1 = fs.readFileSync('doc/doc1.txt', 'utf-8').toString();
 const file2 = fs.readFileSync('doc/doc2.txt', 'utf-8').toString();
 
-const tokenArr = [];
 
 const data1 = file1.split('\r\n');
 const data2 = file2.split('\r\n');
 const data = data1.concat(data2);
 
 const countData1 = data1.length;
-const countData2 = data2.length;
-const total = countData1 + countData2;
 
 
-textProcessing(data);
+const result = textProcessing(data);
+console.log(result);
 
 
+
+
+/* ########################################## Main Function ########################################## */
 function textProcessing(data) {
-
    const tokenWords = [];
    data.map(line => {
       const arrWords = tokenize(line);
       arrWords.map(word => tokenWords.push(word));
    });
 
-   // const kata = 'ilham akhyar firdaus';
-   // const dicari = 'firdaus'
-   // let re = new RegExp("\\b(" + dicari + ")\\b","g");
-   // console.log(kata.match(re));
-
-   const result = indexDocument(tokenWords);
-
-
+   return indexDocument(tokenWords);
 }
 
 
@@ -77,6 +71,7 @@ function tokenize(line) {
          lineReplace = lineReplace.replace(char, '');
       });       
    }
+
    const arrWords = lineReplace.split(' ');
    return prettier(stopwords(arrWords));
 }
@@ -95,6 +90,7 @@ function stopwords(arrWords) {
          }  
       })
    });
+
    return arrWords;
 }
 
@@ -104,7 +100,7 @@ function prettier(arrWords) {
 }
 
 function documentCleaning(doc) {
-   /* membersihkan dokumen dari karakter agar mudah ditemukan pattern nya */
+   /* membersihkan dokumen dari karakter agar mudah saat memakai regex untuk menemukan katanya */
    const newDoc = [];
    doc.map(line => {
       const lineLower = line.toLowerCase();
@@ -117,10 +113,11 @@ function documentCleaning(doc) {
       }
       newDoc.push(lineReplace);
    });
+
    return newDoc;
 }
 
-/*  dari https://medium.com/dailyjs/how-to-remove-array-duplicates-in-es6-5daa8789641c  */
+/*  inspired from https://medium.com/dailyjs/how-to-remove-array-duplicates-in-es6-5daa8789641c  */
 function removeDuplicate(arr) {
    [... new Set(arr)];
    arr.filter((item, index) => arr.indexOf(item) === index);
@@ -144,28 +141,21 @@ function indexDocument(tokenWords) {
       });
    });
 
-   // console.log(dictionaries);
    const result = [];
-   dictionaries.map((dic1, index1) => {
-      dictionaries.filter((dic2, index2) => {
-         if (index1 == index2) {
-            return false;
+   dictionaries.map(item => {
+      const existing = result.filter(v => v.term == item.term);
+      if (existing.length) { 
+         if (item.docId != existing[0].docId[existing[0].docId.length - 1]) {
+            const existingIndex = result.indexOf(existing[0]);
+            result[existingIndex].docId = result[existingIndex].docId.concat(item.docId);
+         }    
+      } else {
+         if (typeof item.docId == 'number') {
+            item.docId = [item.docId];
+            result.push(item);
          }
-
-         if (dic1.term === dic2.term) {
-            result.push({term: dic1, docId: [dic1.docId, dic2.docId]});
-            return false;
-         } else {
-            result.push({term: dic1, docId: dic1.docId});
-            return false;
-         }
-      });
+      }
    });
 
-
-   // if (dic1.term === dic2.term) {
-   //    result.push({term: dic1, docId: [dic1.docId, dic2.docId]});
-   // }
-   // console.log(JSON.stringify(result, null, 3));
-   console.log(result);
+   return result;
 }
